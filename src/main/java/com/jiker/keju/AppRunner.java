@@ -1,15 +1,44 @@
 package com.jiker.keju;
 
+import com.jiker.keju.bean.Taxi;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class AppRunner {
 
+    static Taxi taxi = new Taxi();
+
     public static void main(String[] args) {
-        /*TODO
-          1. args[0]为resources下的测试数据文件名，例如传入的args[0]值为"testData.txt"。
-          2. 你写的程序将把testDataFile作为参数加载此文件并读取文件内的测试数据，并对每条测试数据计算结果。
-          3. 将所有计费结果拼接并使用\n分割，然后保存到receipt变量中。
-         */
-        String testDataFile = args[0];
-        String receipt = "";
-        System.out.println(receipt);
+        String receipt = readFile(args[0]);
+        String[] testData = receipt.split("\n");
+        for (int i = 0; i < testData.length; i++) {
+            int mileage = Integer.parseInt(testData[i].split(",")[0].replace("公里", ""));
+            int waitingTime = Integer.parseInt(testData[i].split(",")[1].replace("等待", "").replace("分钟", ""));
+            int total = taxi.valuation(mileage, waitingTime);
+            System.out.println("收费" + total + "\n");
+        }
+    }
+
+    public static String readEnd(BufferedReader b) throws IOException {
+        String str = null;
+        String string = "";
+        while ((str = b.readLine()) != null) {
+            string += str + "\n";
+        }
+        return string;
+    }
+
+
+
+    public static String readFile(String fileName) {
+        try {
+            BufferedReader b = new BufferedReader(new FileReader(fileName));
+            return readEnd(b);
+        } catch (Exception ex) {
+            System.out.println("file not found");
+        }
+        return null;
     }
 }
